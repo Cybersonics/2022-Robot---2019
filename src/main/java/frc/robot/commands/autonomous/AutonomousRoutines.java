@@ -26,12 +26,14 @@ import frc.robot.Constants.AutoConstants;
 import java.util.List;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
+import frc.robot.RobotContainer;
+
 public class AutonomousRoutines {
     private Drive _drive;
 
     private NavXGyro _navxGyro;
 
-    
+    RobotContainer robot;
 
     public AutonomousRoutines(Drive drive,  NavXGyro navXGyro) {
         this._drive = drive;
@@ -57,6 +59,13 @@ public class AutonomousRoutines {
         );
     }
 
+    public Command testGoToPoint (){
+        return new SequentialCommandGroup(
+            new ResetOdometry(this._drive, new Pose2d(0, 0, new Rotation2d(0))),
+            new GoToPoint(new Translation2d(2.0, 0), Rotation2d.fromDegrees(0), this._drive)
+        );
+    }
+
     public Command testAutoMove(){
          // 1. Create trajectory settings
         TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
@@ -78,9 +87,9 @@ public class AutonomousRoutines {
             // new Translation2d(-7.0, -3),
             // new Translation2d(-7.0, 0.6)),
             // new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
-            new Translation2d(-1,0),
-            new Translation2d(-1,-2)),
-            new Pose2d(-2, -2, Rotation2d.fromDegrees(15)),
+            new Translation2d(1,0),
+            new Translation2d(1,1)),
+            new Pose2d(2, 1, Rotation2d.fromDegrees(180)),
             trajectoryConfig);
 
             // 3. Define PID controllers for tracking trajectory
@@ -122,6 +131,8 @@ public class AutonomousRoutines {
                 new InstantCommand(() -> _drive.stopModules()));
 
     }
+
+
     
 
 

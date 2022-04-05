@@ -113,16 +113,26 @@ public final class Constants {
     public static final class AutoConstants {
         public static final double kMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond / 2;
         public static final double kMaxAngularSpeedRadiansPerSecond = kPhysicalMaxAngularSpeedRadiansPerSecond / 5;//10;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-        public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4;// 2 //Orig 4
-        public static final double kPXController = 1.5;//8;//Orig 1.5
-        public static final double kPYController = 1.5;//8;//Orig 1.5
+        public static final double kMaxAccelerationMetersPerSecondSquared = 3;//orig 3
+        public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 2;// 2 //Orig 4
+        public static final double kPXController = 5;//8;//Orig 1.5
+        public static final double kPYController = 5;//8;//Orig 1.5
         public static final double kPThetaController = 3;//5;//0.5;//Orig 3
 
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = //
                 new TrapezoidProfile.Constraints(
                         kMaxAngularSpeedRadiansPerSecond,
                         kMaxAngularAccelerationRadiansPerSecondSquared);
+        public static final double kGoToPointLinearP = 0;
+        public static final double kGoToPointLinearF = 0.5;
+        public static final double kGoToPointAngularP = 0;
+        public static final double kGoToPointAngularF = 0;
+
+        public static final double maxTrajectoryOverrunSeconds = 3;
+        public static final double kMaxDistanceMetersError = 0.1;
+        public static final double kMaxAngleDegreesError = 5;
+
+
     }
 
 }

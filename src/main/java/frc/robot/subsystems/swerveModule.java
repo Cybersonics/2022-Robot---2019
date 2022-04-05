@@ -166,8 +166,8 @@ public class swerveModule extends SubsystemBase {
   public double getTurningPosition() {
     double steerEncoderRaw = getSteerEncoder();
     double turningEncoder = (steerEncoderRaw / this.encoderCountPerRotation) * 2 * Math.PI;
-    return turningEncoder;
-}
+    return -turningEncoder;
+  }
 
   public void resetEncoders() {
     driveMotorEncoder.setPosition(0);
@@ -175,27 +175,37 @@ public class swerveModule extends SubsystemBase {
 
   public SwerveModuleState getState() {
     return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition()));
-}
-
-public void setDesiredState(SwerveModuleState state) {
-  if (Math.abs(state.speedMetersPerSecond) < 0.001) {
-      stop();
-      return;
   }
-  state = SwerveModuleState.optimize(state, getState().angle);
-  double driveMotorSpeed = state.speedMetersPerSecond / Constants.kPhysicalMaxSpeedMetersPerSecond;
-  double steerMotorAngle = state.angle.getDegrees();
-  setSwerve(steerMotorAngle, driveMotorSpeed);
+
+  public void setDesiredState(SwerveModuleState state) {
+    if (Math.abs(state.speedMetersPerSecond) < 0.001) {
+        stop();
+        return;
+    }
+    state = SwerveModuleState.optimize(state, getState().angle);
+    double driveMotorSpeed = state.speedMetersPerSecond / Constants.kPhysicalMaxSpeedMetersPerSecond;
+    double steerMotorAngle = state.angle.getDegrees();
+    setSwerve(steerMotorAngle, driveMotorSpeed);
 
   // driveMotor.set(state.speedMetersPerSecond / Constants.kPhysicalMaxSpeedMetersPerSecond);
   // turningMotor.set(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));
   //SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString());
-}
+  } 
 
-public void stop() {
-  driveMotor.set(0);
-  //steerMotor.set(0);
-}
+  public void stop() {
+    driveMotor.set(0);
+    //steerMotor.set(0);
+  }
+
+  public void driveMotorRamp(boolean enableRamp){
+    if (enableRamp) {
+      driveMotor.setOpenLoopRampRate(RAMP_RATE);
+    }
+    else {
+      driveMotor.setOpenLoopRampRate(0);
+    }
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

@@ -103,13 +103,13 @@ public class Drive extends SubsystemBase {
 
 		// backRight = new swerveModule(Constants.BR_Steer_Id, Constants.BR_Drive_Id, true, true);
 
-		frontLeft = new swerveModule(Constants.FL_Steer_Id, Constants.FL_Drive_Id, true, false);
+		frontLeft = new swerveModule(Constants.FL_Steer_Id, Constants.FL_Drive_Id, true, true);
 
-		backLeft = new swerveModule(Constants.BL_Steer_Id, Constants.BL_Drive_Id, false, false);
+		backLeft = new swerveModule(Constants.BL_Steer_Id, Constants.BL_Drive_Id, false, true);
 
-		frontRight = new swerveModule(Constants.FR_Steer_Id, Constants.FR_Drive_Id, true, false);
+		frontRight = new swerveModule(Constants.FR_Steer_Id, Constants.FR_Drive_Id, true, true);
 
-		backRight = new swerveModule(Constants.BR_Steer_Id, Constants.BR_Drive_Id, false, false);
+		backRight = new swerveModule(Constants.BR_Steer_Id, Constants.BR_Drive_Id, false, true);
 
 	}
 
@@ -177,14 +177,14 @@ public class Drive extends SubsystemBase {
     double D = forward + omegaW2;
 
     // Compute the drive motor speeds
-    double speedFL = speed(B, D);
-    double speedBL = speed(A, D);
-    double speedFR = speed(B, C);
-    double speedBR = speed(A, C);
-	// double speedFL = speed(B, C);
-    // double speedBL = speed(A, C);
-    // double speedFR = speed(B, D);
-    // double speedBR = speed(A, D);
+    // double speedFL = speed(B, D);
+    // double speedBL = speed(A, D);
+    // double speedFR = speed(B, C);
+    // double speedBR = speed(A, C);
+	double speedFL = speed(B, C);
+    double speedBL = speed(A, C);
+    double speedFR = speed(B, D);
+    double speedBR = speed(A, D);
 
     /*
 		 * ... and angles for the steering motors Set the drive to face straight ahead
@@ -222,20 +222,15 @@ public class Drive extends SubsystemBase {
     // They are at 90 degrees to the front of the robot.
     // Subtract and add 90 degrees to steering calculation to offset for initial
     // position/calibration of drives.
-		// double angleFL = angle(B, C)+ lfOffset;// + Constants.FL_STEER_OFFSET;//+ lfOffset;
-		// double angleBL = angle(A, C)+ lbOffset;// + Constants.BL_STEER_OFFSET;// + lbOffset;
-		// double angleFR = angle(B, D)+ rfOffset;// + Constants.FR_STEER_OFFSET;// + rfOffset;
-		// double angleBR = angle(A, D)+ rbOffset;// + Constants.BR_STEER_OFFSET;// + rbOffset;
+		double angleFL = angle(B, C)+ lfOffset;// + Constants.FL_STEER_OFFSET;//+ lfOffset;
+		double angleBL = angle(A, C)+ lbOffset;// + Constants.BL_STEER_OFFSET;// + lbOffset;
+		double angleFR = angle(B, D)+ rfOffset;// + Constants.FR_STEER_OFFSET;// + rfOffset;
+		double angleBR = angle(A, D)+ rbOffset;// + Constants.BR_STEER_OFFSET;// + rbOffset;
 
-		double angleFL = angle(B, D)+ lfOffset;// + Constants.FL_STEER_OFFSET;//+ lfOffset;
-		double angleBL = angle(A, D)+ lbOffset;// + Constants.BL_STEER_OFFSET;// + lbOffset;
-		double angleFR = angle(B, C)+ rfOffset;// + Constants.FR_STEER_OFFSET;// + rfOffset;
-		double angleBR = angle(A, C)+ rbOffset;// + Constants.BR_STEER_OFFSET;// + rbOffset;
-
-    // double angleFL = angle(B, D);// - 90;
-    // double angleBL = angle(A, D);// + 90;
-    // double angleFR = angle(B, C) + 20;// - 90;
-    // double angleBR = angle(A, C);// + 90;
+		// double angleFL = angle(B, D)+ lfOffset;// + Constants.FL_STEER_OFFSET;//+ lfOffset;
+		// double angleBL = angle(A, D)+ lbOffset;// + Constants.BL_STEER_OFFSET;// + lbOffset;
+		// double angleFR = angle(B, C)+ rfOffset;// + Constants.FR_STEER_OFFSET;// + rfOffset;
+		// double angleBR = angle(A, C)+ rbOffset;// + Constants.BR_STEER_OFFSET;// + rbOffset;
 
     // Compute the maximum speed so that we can scale all the speeds to the range
     // [0.0, 1.0]
@@ -325,30 +320,37 @@ public class Drive extends SubsystemBase {
 	//}
 
   @Override()
-  public void periodic() {
-	odometer.update(this._gyro.getRotation2d(), frontLeft.getState(), frontRight.getState(), backLeft.getState(),
-	backRight.getState());
-	SmartDashboard.putNumber("Robot Heading", this._gyro.getHeading());
-	SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
-    // this.FL_Drive.outputToDashboard();
-    // this.FR_Drive.outputToDashboard();
-    // this.BR_Drive.outputToDashboard();
-    // this.BL_Drive.outputToDashboard();
-  }
-  
-  public void stopModules() {
-	frontLeft.stop();
-	frontRight.stop();
-	backLeft.stop();
-	backRight.stop();
-}
+	public void periodic() {
+		odometer.update(this._gyro.getRotation2d(), frontLeft.getState(), frontRight.getState(), backLeft.getState(),
+		backRight.getState());
+		SmartDashboard.putNumber("Robot Heading", this._gyro.getHeading());
+		SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
+		// this.FL_Drive.outputToDashboard();
+		// this.FR_Drive.outputToDashboard();
+		// this.BR_Drive.outputToDashboard();
+		// this.BL_Drive.outputToDashboard();
+	}
+	
+	public void stopModules() {
+		frontLeft.stop();
+		frontRight.stop();
+		backLeft.stop();
+		backRight.stop();
+	}
 
-public void setModuleStates(SwerveModuleState[] desiredStates) {
-	SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.kPhysicalMaxSpeedMetersPerSecond/2);
-	frontLeft.setDesiredState(desiredStates[0]);
-	frontRight.setDesiredState(desiredStates[1]);
-	backLeft.setDesiredState(desiredStates[2]);
-	backRight.setDesiredState(desiredStates[3]);
-}
+	public void disableRamping(){
+		frontLeft.driveMotorRamp(false);
+		frontRight.driveMotorRamp(false);
+		backLeft.driveMotorRamp(false);
+		backRight.driveMotorRamp(false);
+	}
+
+	public void setModuleStates(SwerveModuleState[] desiredStates) {
+		SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.kPhysicalMaxSpeedMetersPerSecond/2);
+		frontLeft.setDesiredState(desiredStates[0]);
+		frontRight.setDesiredState(desiredStates[1]);
+		backLeft.setDesiredState(desiredStates[2]);
+		backRight.setDesiredState(desiredStates[3]);
+	}
 
 }

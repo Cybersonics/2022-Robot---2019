@@ -64,10 +64,10 @@ public class DriveCommand extends CommandBase {
     double stickForward = -this.leftStick.getY();
     SmartDashboard.putNumber("Controller Forward", stickForward);
     //double stickStrafe = this.driveController.getLeftX();
-    double stickStrafe = this.leftStick.getX();
+    double stickStrafe = -this.leftStick.getX();
     SmartDashboard.putNumber("Controller Strafe", stickStrafe);
     // double stickOmega = (this.driveController.getRightX());
-    double stickOmega = this.rightStick.getX();
+    double stickOmega = -this.rightStick.getX();
     SmartDashboard.putNumber("Controller Omega", stickOmega);
 
 		// double strafe = Math.pow(Math.abs(stickStrafe), leftPow) * Math.signum(-stickStrafe);
@@ -98,8 +98,14 @@ public class DriveCommand extends CommandBase {
         // final double temp = forward * Math.cos(originCorrection) - strafe * Math.sin(originCorrection);
       final double originCorrection = Math.toRadians(originHeading - _navXGyro.getNavAngle());
       //final double originCorrection = Math.toRadians(originHeading - _navXGyro.getNavHeading());
-      final double temp = forward * Math.cos(originCorrection) - strafe * Math.sin(originCorrection);
-      strafe = strafe * Math.cos(originCorrection) + forward * Math.sin(originCorrection);
+
+      //Original 
+      // final double temp = forward * Math.cos(originCorrection) - strafe * Math.sin(originCorrection);
+      // strafe = strafe * Math.cos(originCorrection) + forward * Math.sin(originCorrection);
+      // forward = temp;
+
+      final double temp = forward * Math.cos(originCorrection) + strafe * Math.sin(originCorrection);
+      strafe = strafe * Math.cos(originCorrection) - forward * Math.sin(originCorrection);
       forward = temp;
     }
   
